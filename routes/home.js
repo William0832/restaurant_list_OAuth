@@ -1,6 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const Restaurant = require('../models/restaurant.js')
+
+// 載入 auth middleware 裡的 authenticated 方法
+const { authenticated } = require('../config/auth')
+
 const sortList = [
   {
     id: 0,
@@ -41,7 +45,8 @@ const sortList = [
 ]
 
 // setting route
-router.get('/', (req, res) => {
+router.get('/', authenticated, (req, res) => {
+  // 加入認證
   // 存入keyword
   const keyword = req.query.keyword
   // 存入sort 類型
