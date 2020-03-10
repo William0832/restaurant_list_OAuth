@@ -26,7 +26,7 @@ const session = require('express-session')
 const passport = require('passport')
 
 // mongoDB 連線
-mongoose.connect('mongodb://localhost/todo', {
+mongoose.connect('mongodb://localhost/restaurant', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true

@@ -42,7 +42,7 @@ router.post('/new', authenticated, (req, res) => {
 
 // show specific restaurant
 router.get('/:id', authenticated, (req, res) => {
-  Restaurant.findOne({ _id: req.params.id, userId: req.user._id }) // TODO: 檢查 _id名稱
+  Restaurant.findOne({ _id: req.params.id, userId: req.user._id })
     .lean()
     .exec((err, restaurant) => {
       if (err) return console.error(err)
