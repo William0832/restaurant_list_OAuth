@@ -37,7 +37,7 @@ db.once('open', () => {
 // 載入 routers
 app.use('/', require('./routes/home.js'))
 app.use('/restaurants', require('./routes/restaurant.js'))
-
+app.use('/users', require('./routes/user.js'))
 // listen app
 app.listen(port, () => {
   console.log(`App is listening on localhost:${port}`)
