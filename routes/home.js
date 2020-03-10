@@ -54,7 +54,7 @@ router.get('/', authenticated, (req, res) => {
   const sort = sortList[Number(sortId)]
   const sortOption = { [sort.type]: [sort.value] }
   // 篩選&編排資料
-  Restaurant.find()
+  Restaurant.find({ userId: req.user._id })
     .sort(sortOption)
     .lean()
     .exec((err, restaurants) => {

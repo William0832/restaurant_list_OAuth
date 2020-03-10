@@ -23,8 +23,11 @@
             width="30" height="30" class="d-inline-block align-top" alt="我的餐廳清單">
           我的餐廳清單
         </a>
-        <a class="btn btn-warning border-dark my-3" href="/restaurants/new">Create</a>
-
+        {{#if isAuthenticated}}
+        <a href="/users/logout" class="btn btn-secondary my-3">Logout</a>
+        {{else}}
+        <a href="/users/login" class="btn btn-secondary my-3">Login</a>
+        {{/if}}
       </div>
     </nav>
 

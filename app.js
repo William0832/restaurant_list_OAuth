@@ -25,9 +25,11 @@ const session = require('express-session')
 // 載入 passport
 const passport = require('passport')
 
-mongoose.connect('mongodb://localhost/restaurant', {
+// mongoDB 連線
+mongoose.connect('mongodb://localhost/todo', {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useCreateIndex: true
 })
 const db = mongoose.connection
 // db error
@@ -57,6 +59,7 @@ require('./config/passport')(passport)
 // 登入後可以取得使用者的資訊方便我們在 view 裡面直接使用
 app.use((req, res, next) => {
   res.locals.user = req.user
+  res.locals.isAuthenticated = req.isAuthenticated() // 辨識使用者是否已經登入的變數，讓 view 可以使用
   next()
 })
 

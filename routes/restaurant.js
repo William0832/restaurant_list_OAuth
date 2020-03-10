@@ -4,8 +4,8 @@ const Restaurant = require('../models/restaurant.js')
 const { authenticated } = require('../config/auth')
 // setting roures
 // show all restaurants
-router.get('/', (req, res) => {
-  Restaurant.find()
+router.get('/', authenticated, (req, res) => {
+  Restaurant.find({ userId: req.user._id })
     .lean()
     .exec((err, restaurants) => {
       if (err) return console.error(err)
@@ -29,7 +29,8 @@ router.post('/new', authenticated, (req, res) => {
     phone: req.body.phone,
     google_map: req.body.google_map,
     rating: Number(req.body.rating),
-    description: req.body.description
+    description: req.body.description,
+    userId: req.user._id
   })
   // 存入 db
   restaurant.save(err => {
@@ -41,7 +42,7 @@ router.post('/new', authenticated, (req, res) => {
 
 // show specific restaurant
 router.get('/:id', authenticated, (req, res) => {
-  Restaurant.findById(req.params.id)
+  Restaurant.findOne({ _id: req.params.id, userId: req.user._id }) // TODO: 檢查 _id名稱
     .lean()
     .exec((err, restaurant) => {
       if (err) return console.error(err)
@@ -51,7 +52,7 @@ router.get('/:id', authenticated, (req, res) => {
 
 // edit - show edit page
 router.get('/edit/:id', authenticated, (req, res) => {
-  Restaurant.findById(req.params.id)
+  Restaurant.findOne({ _id: req.params.id, userId: req.user._id })
     .lean()
     .exec((err, restaurant) => {
       if (err) return console.error(err)
@@ -60,33 +61,39 @@ router.get('/edit/:id', authenticated, (req, res) => {
 })
 // edit - 處理db & 顯示結果
 router.put('/edit/:id', authenticated, (req, res) => {
-  Restaurant.findById(req.params.id, (err, restaurant) => {
-    if (err) return console.error(err)
-    restaurant.name = req.body.name
-    restaurant.name_en = req.body.name_en
-    restaurant.category = req.body.category
-    restaurant.image = req.body.image
-    restaurant.location = req.body.location
-    restaurant.phone = req.body.phone
-    restaurant.google_map = req.body.google_map
-    restaurant.rating = Number(req.body.rating)
-    restaurant.description = req.body.description
-    restaurant.save(err => {
+  Restaurant.findOne(
+    { _id: req.params.id, userId: req.user._id },
+    (err, restaurant) => {
       if (err) return console.error(err)
-      return res.redirect(`/restaurants/${req.params.id}`)
-    })
-  })
+      restaurant.name = req.body.name
+      restaurant.name_en = req.body.name_en
+      restaurant.category = req.body.category
+      restaurant.image = req.body.image
+      restaurant.location = req.body.location
+      restaurant.phone = req.body.phone
+      restaurant.google_map = req.body.google_map
+      restaurant.rating = Number(req.body.rating)
+      restaurant.description = req.body.description
+      restaurant.save(err => {
+        if (err) return console.error(err)
+        return res.redirect(`/restaurants/${req.params.id}`)
+      })
+    }
+  )
 })
 
 // delete
 router.delete('/delete/:id', authenticated, (req, res) => {
-  Restaurant.findById(req.params.id, (err, restaurant) => {
-    if (err) return console.error(err)
-    restaurant.remove(err => {
+  Restaurant.findOne(
+    { _id: req.params.id, userId: req.user._id },
+    (err, restaurant) => {
       if (err) return console.error(err)
-      return res.redirect('/')
-    })
-  })
+      restaurant.remove(err => {
+        if (err) return console.error(err)
+        return res.redirect('/')
+      })
+    }
+  )
 })
 
 module.exports = router
